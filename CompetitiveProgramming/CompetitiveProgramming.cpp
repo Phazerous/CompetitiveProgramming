@@ -1,58 +1,65 @@
 ﻿#include <fstream>
 #include <vector>
 
-/*
-Сгенерировать все возможные комбинации правильных скобок с количеством 2n
-Правильные:
-(1 + 1) + (1  + 1) -> ()()
-((1 + 1) + ((1 + 1))) -> (()(()))
-Неправильные:
-)(
-(()))
-*/
-
 using namespace std;
 
 ifstream cin("input.txt");
 ofstream cout("output.txt");
 
+vector<int> buffer;
+
 int n;
-vector<char> buffer;
 
+void rec();
 void out();
-
-void rec(int idx, int bal);
+int calcSum();
 
 int main() {
 	cin >> n;
 
-	buffer = vector<char>(n * 2);
-	rec(0, 0);
-	
+	rec();
+
 	return 0;
 }
 
-void rec(int idx, int bal) {
-	if (idx == n * 2) {
-		if (bal == 0)
-			out();
+int calcSum() {
+	int sum = 0;
 
+	for (int num : buffer) {
+		sum += num;
+	}
+
+	return sum;
+}
+
+void rec() {
+	int currSum = calcSum();
+
+	if (currSum == n) {
+		out();
 		return;
 	}
 
-	buffer[idx] = '(';
-	rec(idx + 1, bal + 1);
-
-	if (bal == 0)
-		return;
-
-	buffer[idx] = ')';
-	rec(idx + 1, bal - 1);
+	for (int i = 1; i <= n - currSum; i++) {
+		if (currSum == 0 || (i >= buffer[buffer.size() - 1] && currSum + i <= n)) {
+			buffer.push_back(i);
+			rec();
+			buffer.pop_back();
+		}
+	}
 }
 
 void out() {
-	for (char c : buffer) {
-		cout << c;
+	for (int i = 0; i < buffer.size(); i++) {
+		if (i == 0) {
+			cout << n << " = ";
+		}
+
+		cout << buffer[i];
+
+		if (i != buffer.size() - 1) {
+			cout << " + ";
+		}
 	}
 
 	cout << '\n';
