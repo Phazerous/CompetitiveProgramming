@@ -2,25 +2,26 @@
 #include <vector>
 
 /*
-Вывести все последовательности длины n, состоящие из чисел от
-1 до m. Каждое число может встречаться в последовательности
-несколько раз или не встречаться совсем.
+Вывести все последовательности чисел от 1 до n, в которых каждое число встречается ровно один раз.
 */
 
 using namespace std;
-int n, m;
-vector<int> buffer;
+int n;
 
 ifstream cin("input.txt");
 ofstream cout("output.txt");
+
+vector<int> buffer;
+vector<bool> used;
 
 void rec(int idx);
 void out();
 
 int main() {
-	cin >> n >> m;
+	cin >> n;
 	
 	buffer = vector<int>(n);
+	used = vector<bool>(n + 1, false);
 
 	rec(0);
 
@@ -33,9 +34,15 @@ void rec(int idx) {
 		return;
 	}
 
-	for (int i = 1; i <= m; i++) {
+	for (int i = 1; i <= n; i++) {
+		if (used[i]) {
+			continue;
+		}
+
 		buffer[idx] = i;
+		used[i] = true;
 		rec(idx + 1);
+		used[i] = false;
 	}
 }
 
