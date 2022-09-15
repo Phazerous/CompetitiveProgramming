@@ -1,21 +1,48 @@
-﻿#include <iostream>
+﻿#include <fstream>
+#include <vector>
 
 /*
-Нужно перебрать все строки длины 3, состоящие из строчных
-латинских букв ‘a’, ‘b’ и ‘c’. Каждая буква может встречаться в
-строке несколько раз или не встречаться совсем.
+Вывести все последовательности длины n, состоящие из чисел от
+1 до m. Каждое число может встречаться в последовательности
+несколько раз или не встречаться совсем.
 */
 
-
 using namespace std;
+int n, m;
+vector<int> buffer;
 
-int main()
-{
-    for (char c1 = 'a'; c1 <= 'c'; c1++) {
-        for (char c2 = 'a'; c2 <= 'c'; c2++) {
-            for (char c3 = 'a'; c3 <= 'c'; c3++) {
-                cout << c1 << c2 << c3 << '\n';
-            }
-        }
-    }
+ifstream cin("input.txt");
+ofstream cout("output.txt");
+
+void rec(int idx);
+void out();
+
+int main() {
+	cin >> n >> m;
+	
+	buffer = vector<int>(n);
+
+	rec(0);
+
+	return 0;
+}
+
+void rec(int idx) {
+	if (idx == n) {
+		out();
+		return;
+	}
+
+	for (int i = 1; i <= m; i++) {
+		buffer[idx] = i;
+		rec(idx + 1);
+	}
+}
+
+void out() {
+	for (int number : buffer) {
+		cout << number;
+	}
+
+	cout << '\n';
 }
