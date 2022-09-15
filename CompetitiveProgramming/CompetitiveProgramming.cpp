@@ -2,53 +2,57 @@
 #include <vector>
 
 /*
-Вывести все последовательности чисел от 1 до n, в которых каждое число встречается ровно один раз.
+Сгенерировать все возможные комбинации правильных скобок с количеством 2n
+Правильные:
+(1 + 1) + (1  + 1) -> ()()
+((1 + 1) + ((1 + 1))) -> (()(()))
+Неправильные:
+)(
+(()))
 */
 
 using namespace std;
-int n;
 
 ifstream cin("input.txt");
 ofstream cout("output.txt");
 
-vector<int> buffer;
-vector<bool> used;
+int n;
+vector<char> buffer;
 
-void rec(int idx);
 void out();
+
+void rec(int idx, int bal);
 
 int main() {
 	cin >> n;
+
+	buffer = vector<char>(n * 2);
+	rec(0, 0);
 	
-	buffer = vector<int>(n);
-	used = vector<bool>(n + 1, false);
-
-	rec(0);
-
 	return 0;
 }
 
-void rec(int idx) {
-	if (idx == n) {
-		out();
+void rec(int idx, int bal) {
+	if (idx == n * 2) {
+		if (bal == 0)
+			out();
+
 		return;
 	}
 
-	for (int i = 1; i <= n; i++) {
-		if (used[i]) {
-			continue;
-		}
+	buffer[idx] = '(';
+	rec(idx + 1, bal + 1);
 
-		buffer[idx] = i;
-		used[i] = true;
-		rec(idx + 1);
-		used[i] = false;
-	}
+	if (bal == 0)
+		return;
+
+	buffer[idx] = ')';
+	rec(idx + 1, bal - 1);
 }
 
 void out() {
-	for (int number : buffer) {
-		cout << number;
+	for (char c : buffer) {
+		cout << c;
 	}
 
 	cout << '\n';
