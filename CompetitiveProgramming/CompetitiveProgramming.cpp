@@ -1,53 +1,64 @@
-﻿#include <fstream>
+﻿#include <iostream>
 #include <vector>
 
 using namespace std;
 
-ifstream cin("input.txt");
-ofstream cout("output.txt");
+int n = 4;
+int answer = 10000000;
 
-int n;
-vector<int> buffer;
+vector<vector<int>> pathes;
+vector<bool> used;
+vector<int> way;
 
-void rec(int idx, int sum, int last);
-void show(int idx);
+void rec(int idx, int len);
 
 int main() {
-	cin >> n;
+	used = vector<bool>(n);
+	way = vector<int>(n);
+	pathes = vector<vector<int>>(n, vector<int>(n, 0));
 
-	buffer = vector<int>(n);
+	pathes[0][0] = 0;
+	pathes[0][1] = 1;
+	pathes[0][2] = 4;
+	pathes[0][3] = 6;
 
-	rec(0, 0, 0);
-	
+	pathes[1][0] = 1;
+	pathes[1][1] = 0;
+	pathes[1][2] = 5;
+	pathes[1][3] = 2;
+
+	pathes[2][0] = 4;
+	pathes[2][1] = 5;
+	pathes[2][2] = 0;
+	pathes[2][3] = 3;
+
+	pathes[3][0] = 6;
+	pathes[3][1] = 2;
+	pathes[3][2] = 3;
+	pathes[3][3] = 0;
+
+	way[0] = 0;
+	rec(1, 0);
+
+	cout << answer;
+
 	return 0;
 }
 
-void rec(int idx, int sum, int last) {
-	if (sum == n) {
-		show(idx);
-		return;
+void rec(int idx, int len) {
+	if (len >= answer) return;
+
+	if (idx == n) {
+		answer = min(answer, len);
 	}
 
-	for (int i = last; i <= n - sum; i++) {
-		if (i == 0)
-			continue;
+	for (int i = 1; i < n; i++) {
+		if (used[i]) continue;
 
-		buffer[idx] = i;
-		rec(idx + 1, sum + i, i);
+		way[idx] = i;
+
+		used[i] = true;
+		rec(idx + 1, len + pathes[way[idx - 1]][i]);
+		used[i] = false;
 	}
-}
-
-void show(int idx) {
-	cout << n << " = ";
-
-	for (int i = 0; i < idx; i++) {
-		cout << buffer[i];
-
-		if (i == idx - 1)
-			break;
-
-		cout << " + ";
-	}
-
-	cout << "\n";
 }
